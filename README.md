@@ -5,9 +5,8 @@
 
 In the project directory, you can run:
 
-### Run
-# Run frontend (:3000) & backend (:5000)
+### Run frontend (:3000) & backend (:5000)
 npm run dev
 
-# Run backend only
+### Run backend only
 npm run server
