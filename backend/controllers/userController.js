@@ -4,7 +4,7 @@ import User from '../models/usersModel.js'
 
 /**
  * @desc  Auth user & get token
- * @route POST /api/v1/user/login
+ * @route POST /api/v1/users/login
  * @access Public
  */
 
@@ -29,7 +29,7 @@ const authUser = asyncHandler(async (req, res) => {
 
 /**
  * @desc  Register a new user
- * @route POST /api/v1/user
+ * @route POST /api/v1/users
  * @access Public
  */
 
@@ -65,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 /**
  * @desc  Get user profile
- * @route GET /api/v1/user/profile
+ * @route GET /api/v1/users/profile
  * @access Private
  */
 
@@ -87,11 +87,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 /**
  * @desc  Update user profile
- * @route PUT /api/v1/user/profile
+ * @route PUT /api/v1/users/profile
  * @access Private
  */
 
-const upddateUserProfile = asyncHandler(async (req, res) => {
+const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
   if (user) {
@@ -101,14 +101,14 @@ const upddateUserProfile = asyncHandler(async (req, res) => {
       user.password = req.body.password
     }
 
-    const updateUser = await user.save()
+    const updatedUser = await user.save()
 
     res.json({
-      _id: updateUser._id,
-      name: updateUser.name,
-      email: updateUser.email,
-      isAdmin: updateUser._isAdmin,
-      token: generateToken(updateUser._id),
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser._isAdmin,
+      token: generateToken(updatedUser._id),
     })
   } else {
     res.status(404)
@@ -116,4 +116,87 @@ const upddateUserProfile = asyncHandler(async (req, res) => {
   }
 })
 
-export { authUser, registerUser, getUserProfile, upddateUserProfile }
+/**
+ * @desc  Get All users
+ * @route GET /api/v1/users
+ * @access Private/Admin
+ */
+
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
+})
+
+/**
+ * @desc  Get user by ID
+ * @route GET /api/v1/users/:id
+ * @access Private/Admin
+ */
+
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).selected('-passord')
+
+  if (user) {
+    res.json(user)
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+/**
+ * @desc  Update user
+ * @route PUT /api/v1/users/:id
+ * @access Private/Admin
+ */
+
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.paramsid)
+
+  if (user) {
+    user.name = req.body.name || user.name
+    user.email = req.body.email || user.email
+    user.isAdmin = req.body.isAdmin
+
+    const updatedUser = await user.save()
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+/**
+ * @desc  Delete user
+ * @route DELETE /api/v1/users/:id
+ * @access Private/Admin
+ */
+
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+
+  if (user) {
+    await user.remove()
+    res.json({ message: 'User removed' })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+export {
+  authUser,
+  registerUser,
+  getUserProfile,
+  updateUserProfile,
+  getUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+}

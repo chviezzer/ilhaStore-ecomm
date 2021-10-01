@@ -1,45 +1,45 @@
-import React, { useState, useEffect } from "react";
-import { Form, Row, Col } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
-import { getUserDetails } from "../actions/userActions";
+import React, { useState, useEffect } from 'react'
+import { Form, Row, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+import { getUserDetails } from '../actions/userActions'
 
 const ProfileScreen = ({ location, history }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState(null);
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [message, setMessage] = useState(null)
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const userDetails = useSelector((state) => state.userDetails);
-  const { loading, error, user } = userDetails;
+  const userDetails = useSelector((state) => state.userDetails)
+  const { loading, error, user } = userDetails
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
   useEffect(() => {
     if (!userInfo) {
-      history.push("/login");
+      history.push('/login')
     } else {
-      if (!user.name) {
-        dispatch(getUserDetails("profile"));
+      if (user.name) {
+        dispatch(getUserDetails('profile'))
       } else {
-        setName(user.name);
-        setEmail(user.email);
+        setName(user.name)
+        setEmail(user.email)
       }
     }
-  }, [dispatch, history, userInfo, user]);
+  }, [dispatch, history, userInfo, user])
 
   const submitHandler = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (password !== confirmPassword) {
-      setMessage("Password do not macth");
+      setMessage('Password do not macth')
     } else {
     }
-  };
+  }
 
   return (
     <Row>
@@ -91,10 +91,10 @@ const ProfileScreen = ({ location, history }) => {
         </Form>
       </Col>
       <Col md={9}>
-        <h2>My Gyphys</h2>
+        <h2>My Orders</h2>
       </Col>
     </Row>
-  );
-};
+  )
+}
 
-export default ProfileScreen;
+export default ProfileScreen
